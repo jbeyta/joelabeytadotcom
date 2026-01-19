@@ -46,8 +46,17 @@ body {
 .app-wrapper {
   min-height: 100vh;
   display: flex;
-  border-right: $border-width solid $color-black;
   padding: $spacing-lg $spacing-md;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: $border-width;
+    height: 100vh;
+    background-color: $color-black;
+  }
 
   &::after {
     content: '';
