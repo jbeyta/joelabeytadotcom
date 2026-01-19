@@ -5,7 +5,7 @@ $color-light-gray: #e0e0e0;
 $color-black: #000000;
 $color-deep-red: #d3170b;
 
-$font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$font-stack: 'Roboto Mono', monospace;
 
 $spacing-xs: 0.5rem;
 $spacing-sm: 1rem;
@@ -70,6 +70,7 @@ body {
 h1 {
   font-size: 2rem;
   font-weight: 700;
+  text-transform: uppercase;
   margin-bottom: $spacing-lg;
   color: $color-dark-gray;
 }
