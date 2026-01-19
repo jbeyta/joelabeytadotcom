@@ -28,7 +28,7 @@ function App() {
         <hr className="divider" />
 
         <section className="projects">
-          <p><a href="https:/publicaudioarchive.com" target="_blank" rel="noopener noreferrer">Public Audio Archive</a></p>
+          <p><a href="https://publicaudioarchive.com" target="_blank" rel="noopener noreferrer">Public Audio Archive</a></p>
         </section>
       </div>
     </div>
