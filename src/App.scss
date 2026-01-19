@@ -46,7 +46,7 @@ body {
 .app-wrapper {
   min-height: 100vh;
   display: flex;
-  padding: $spacing-lg $spacing-md;
+  padding: $spacing-lg calc($border-width + $spacing-md) $spacing-lg $spacing-md;
 
   &::before {
     content: '';
