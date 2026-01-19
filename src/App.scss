@@ -3,7 +3,7 @@ $color-white: #ffffff;
 $color-dark-gray: #2a2a2a;
 $color-light-gray: #e0e0e0;
 $color-black: #000000;
-$color-deep-red: #8b0000;
+$color-deep-red: #d3170b;
 
 $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
@@ -48,6 +48,17 @@ body {
   display: flex;
   border-right: $border-width solid $color-black;
   padding: $spacing-lg $spacing-md;
+
+  &::after {
+    content: '';
+    position: fixed;
+    top: 33px;
+    right: 29px; // Centers on 66px border: (66px / 2) - (8px / 2) = 29px
+    width: 8px;
+    height: 8px;
+    background-color: $color-deep-red;
+    border-radius: 50%;
+  }
 }
 
 .content {
