@@ -22,10 +22,7 @@ function App() {
         
         <section className="bio">
           <p>
-            I am a web developer with 10+ years of experience in PHP, HTML, CSS/SASS, JS (jQuery, Vue, React), and lots of WordPress sites. 
-            I am a musician and singer in as many musical projects as time will allow. Currently, I sing and play guitar in Skeksis and 
-            Gamma Goblin both based in Wichita Falls, TX. I'm an aspiring filmmaker. I've shot more projects than I've finished but I'll 
-            post projects that I've finished. I am a visual artist dabbling mostly in photography, drawing, and 3d digital stuff (Blender).
+            I am a web developer with 10+ years of experience in PHP, HTML, CSS/SCSS, JS, React, Typescript, SQL, AI "vibe coding", and more.  I have worked on a variety of projects ranging from small business websites to large-scale web applications. I am passionate about creating clean, efficient, and user-friendly web experiences. 
           </p>
         </section>
       </div>
