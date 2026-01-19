@@ -1,0 +1,174 @@
+// SCSS Variables
+$color-white: #ffffff;
+$color-dark-gray: #2a2a2a;
+$color-light-gray: #e0e0e0;
+$color-black: #000000;
+$color-deep-red: #8b0000;
+
+$font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+$spacing-xs: 0.5rem;
+$spacing-sm: 1rem;
+$spacing-md: 1.5rem;
+$spacing-lg: 2rem;
+$spacing-xl: 3rem;
+
+$border-width: 66px;
+$divider-width: 1px;
+
+// Breakpoints
+$breakpoint-tablet: 768px;
+$breakpoint-desktop: 1024px;
+
+// Reset and Base Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  font-family: $font-stack;
+  color: $color-dark-gray;
+  background-color: $color-white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Main Layout
+.app-wrapper {
+  min-height: 100vh;
+  display: flex;
+  border-right: $border-width solid $color-black;
+  padding: $spacing-lg $spacing-md;
+}
+
+.content {
+  width: 100%;
+  max-width: 800px;
+}
+
+// Typography
+h1 {
+  font-size: 2rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: $spacing-lg;
+  color: $color-dark-gray;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+a {
+  color: $color-dark-gray;
+  text-decoration: none;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: $color-deep-red;
+  }
+}
+
+// Divider
+.divider {
+  border: none;
+  height: $divider-width;
+  background-color: $color-light-gray;
+  margin: $spacing-lg 0;
+}
+
+// Contact Section
+.contact {
+  margin-bottom: $spacing-lg;
+}
+
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+
+  a {
+    font-size: 0.95rem;
+    font-weight: 300;
+  }
+}
+
+.resume-button {
+  display: inline-block;
+  padding: $spacing-xs $spacing-md;
+  border: 1px solid $color-dark-gray;
+  background-color: transparent;
+  color: $color-dark-gray;
+  font-size: 0.9rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  width: fit-content;
+
+  &:hover {
+    background-color: $color-dark-gray;
+    color: $color-white;
+  }
+}
+
+// Bio Section
+.bio {
+  p {
+    font-weight: 300;
+  }
+}
+
+// Tablet and up
+@media (min-width: $breakpoint-tablet) {
+  .app-wrapper {
+    padding: $spacing-xl $spacing-lg;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: $spacing-xl;
+  }
+
+  .contact-info {
+    flex-direction: row;
+    gap: $spacing-lg;
+  }
+
+  p {
+    font-size: 1.05rem;
+  }
+}
+
+// Desktop and up
+@media (min-width: $breakpoint-desktop) {
+  .app-wrapper {
+    padding: $spacing-xl $spacing-xl;
+  }
+
+  .content {
+    max-width: 900px;
+  }
+
+  h1 {
+    font-size: 3rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+}
