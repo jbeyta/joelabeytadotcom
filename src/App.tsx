@@ -21,9 +21,14 @@ function App() {
         <hr className="divider" />
         
         <section className="bio">
-          <p>
-            I am a web developer with 10+ years of experience in PHP, HTML, CSS/SCSS, JS, React, Typescript, SQL, AI "vibe coding", and more.  I have worked on a variety of projects ranging from small business websites to large-scale web applications. I am passionate about creating clean, efficient, and user-friendly web experiences. 
-          </p>
+          <p><b>Web Development:</b> 14+ years experience|experimentation</p>
+          <p><b>Technology:</b> JS, React, Typescript, PHP, SQL, AI coding</p>
+        </section>
+
+        <hr className="divider" />
+
+        <section className="projects">
+          <p><a href="https:/publicaudioarchive.com" target="_blank" rel="noopener noreferrer">Public Audio Archive</a></p>
         </section>
       </div>
     </div>
