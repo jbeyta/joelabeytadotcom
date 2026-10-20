@@ -1,4 +1,4 @@
-const CACHE = 'list-v1'
+const CACHE = 'list-v2'
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -7,7 +7,7 @@ self.addEventListener('install', event => {
     const html = await res.clone().text()
     const assets = [...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map(m => m[1])
     await cache.put('/index.html', res)
-    await cache.addAll([...new Set([...assets, '/manifest.webmanifest'])])
+    await cache.addAll([...new Set([...assets, '/manifest.webmanifest', '/goals.webmanifest', '/goals-icon.svg', '/goals-icon-192.png', '/goals-icon-512.png', '/goals-apple-touch-icon.png'])])
     self.skipWaiting()
   })())
 })
