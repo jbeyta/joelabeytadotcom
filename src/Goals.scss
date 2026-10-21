@@ -84,4 +84,29 @@
     text-transform: uppercase;
     cursor: pointer;
   }
+
+  .goals-summary {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin-bottom: 28px;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .goals-summary-title {
+    display: block;
+    font: bold 28px monospace;
+    margin-bottom: 8px;
+    overflow-wrap: anywhere;
+  }
+
+  .goals-progress {
+    display: grid;
+    grid-template-columns: repeat(30, 1fr);
+    gap: 2px;
+    height: 12px;
+  }
 }

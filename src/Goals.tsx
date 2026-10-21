@@ -3,6 +3,7 @@ import './Goals.scss'
 
 type Tab = { id: string; title: string; color: string; cells: boolean[]; lastTap: string | null; ready?: boolean }
 
+const HOME = 'home'
 const STORAGE_KEY = 'goals-tabs-v1'
 const CELLS = 30
 const PIXEL = 4
@@ -25,10 +26,10 @@ const newTab = (): Tab => ({
 const load = (): { tabs: Tab[]; active: string } => {
   try {
     const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '')
-    if (raw.tabs?.length) return raw
+    if (raw.tabs?.length) return { ...raw, active: HOME }
   } catch { /* fall through */ }
   const t = newTab()
-  return { tabs: [t], active: t.id }
+  return { tabs: [t], active: HOME }
 }
 
 type Particle = { x: number; y: number; vx: number; vy: number; life: number; color: string }
@@ -120,8 +121,9 @@ export default function Goals() {
   const [state, setState] = useState(load)
   const [burst, setBurst] = useState<{ x: number; y: number } | null>(null)
   const { tabs, active } = state
+  const isHome = active === HOME
   const tab = tabs.find(t => t.id === active) ?? tabs[0]
-  const full = tab.cells.every(Boolean)
+  const full = !isHome && tab.cells.every(Boolean)
   const ready = !!tab.ready
 
   useEffect(() => {
@@ -143,11 +145,8 @@ export default function Goals() {
     if (!window.confirm(`Delete "${tab.title}"? This can't be undone.`)) return
     setState(s => {
       const rest = s.tabs.filter(t => t.id !== tab.id)
-      if (!rest.length) {
-        const t = newTab()
-        return { tabs: [t], active: t.id }
-      }
-      return { tabs: rest, active: rest[0].id }
+      if (!rest.length) return { tabs: [newTab()], active: HOME }
+      return { tabs: rest, active: HOME }
     })
   }
 
@@ -165,14 +164,24 @@ export default function Goals() {
 
   return (
     <div className="goals">
-      <Fireworks color={tab.color} burst={burst} constant={full} />
+      <Fireworks color={isHome ? '#fff' : tab.color} burst={burst} constant={full} />
       <div className="goals-content">
         <div className="goals-tabs">
+          <button
+            className={`goals-tab${isHome ? ' active' : ''}`}
+            style={{ borderColor: isHome ? '#fff' : undefined }}
+            onClick={() => setState(s => ({ ...s, active: HOME }))}
+            aria-label="Home"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+              <path d="M3 11l9-8 9 8M5 10v11h5v-6h4v6h5V10" />
+            </svg>
+          </button>
           {tabs.map(t => (
             <button
               key={t.id}
-              className={`goals-tab${t.id === tab.id ? ' active' : ''}`}
-              style={{ borderColor: t.id === tab.id ? t.color : undefined }}
+              className={`goals-tab${!isHome && t.id === tab.id ? ' active' : ''}`}
+              style={{ borderColor: !isHome && t.id === tab.id ? t.color : undefined }}
               onClick={() => setState(s => ({ ...s, active: t.id }))}
               aria-label={`Open ${t.title}`}
             >
@@ -180,12 +189,29 @@ export default function Goals() {
             </button>
           ))}
           <button className="goals-tab add" onClick={addTab} aria-label="Add tab">+</button>
-          <button className="goals-tab trash" onClick={removeTab} aria-label="Delete tab">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
-              <path d="M3 6h18M8 6V3h8v3M6 6l1 15h10l1-15M10 10v7M14 10v7" />
-            </svg>
-          </button>
+          {!isHome && (
+            <button className="goals-tab trash" onClick={removeTab} aria-label="Delete tab">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="square">
+                <path d="M3 6h18M8 6V3h8v3M6 6l1 15h10l1-15M10 10v7M14 10v7" />
+              </svg>
+            </button>
+          )}
         </div>
+        {isHome ? (
+          <div className="goals-home">
+            {tabs.map(t => (
+              <button key={t.id} className="goals-summary" onClick={() => setState(s => ({ ...s, active: t.id }))}>
+                <span className="goals-summary-title" style={{ color: t.color }}>{t.title}</span>
+                <span className="goals-progress">
+                  {t.cells.map((on, i) => (
+                    <span key={i} style={{ background: on ? t.color : '#333' }} />
+                  ))}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <>
         <input
           className="goals-title"
           style={{ color: tab.color }}
@@ -206,6 +232,15 @@ export default function Goals() {
             </button>
           ))}
         </div>
+        {ready && full && (
+          <button
+            className="goals-ready"
+            style={{ color: tab.color, borderColor: tab.color }}
+            onClick={() => window.confirm('Clear the grid and start a new round?') && update(tab.id, { cells: Array(CELLS).fill(false) })}
+          >
+            Restart
+          </button>
+        )}
         {!ready && (
           <button
             className="goals-ready"
@@ -214,6 +249,8 @@ export default function Goals() {
           >
             Ready
           </button>
+        )}
+          </>
         )}
       </div>
     </div>
