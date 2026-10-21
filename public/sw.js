@@ -1,12 +1,17 @@
-const CACHE = 'list-v2'
+const CACHE = 'list-v3'
+const PAGES = ['/index.html', '/goals.html']
+const pageFor = url => (url.pathname.startsWith('/goals') ? '/goals.html' : '/index.html')
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE)
-    const res = await fetch('/index.html', { cache: 'reload' })
-    const html = await res.clone().text()
-    const assets = [...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map(m => m[1])
-    await cache.put('/index.html', res)
+    const assets = []
+    for (const page of PAGES) {
+      const res = await fetch(page, { cache: 'reload' })
+      const html = await res.clone().text()
+      assets.push(...[...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map(m => m[1]))
+      await cache.put(page, res)
+    }
     await cache.addAll([...new Set([...assets, '/manifest.webmanifest', '/goals.webmanifest', '/goals-icon.svg', '/goals-icon-192.png', '/goals-icon-512.png', '/goals-apple-touch-icon.png'])])
     self.skipWaiting()
   })())
@@ -28,10 +33,10 @@ self.addEventListener('fetch', event => {
     event.respondWith((async () => {
       try {
         const res = await fetch(req)
-        if (res.ok) (await caches.open(CACHE)).put('/index.html', res.clone())
+        if (res.ok) (await caches.open(CACHE)).put(pageFor(url), res.clone())
         return res
       } catch {
-        return (await caches.match('/index.html')) || Response.error()
+        return (await caches.match(pageFor(url))) || Response.error()
       }
     })())
     return

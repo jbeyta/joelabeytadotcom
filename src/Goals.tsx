@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './Goals.scss'
 
-type Tab = { id: string; title: string; color: string; cells: boolean[]; lastTap: string | null }
+type Tab = { id: string; title: string; color: string; cells: boolean[]; lastTap: string | null; ready?: boolean }
 
 const STORAGE_KEY = 'goals-tabs-v1'
 const CELLS = 30
@@ -122,7 +122,7 @@ export default function Goals() {
   const { tabs, active } = state
   const tab = tabs.find(t => t.id === active) ?? tabs[0]
   const full = tab.cells.every(Boolean)
-  const backfill = new URLSearchParams(window.location.search).has('backfill')
+  const ready = !!tab.ready
 
   useEffect(() => {
     try {
@@ -153,10 +153,14 @@ export default function Goals() {
 
   const tap = (i: number, el: HTMLElement) => {
     // Check the date at tap time: an installed app can stay open past midnight without a re-render.
-    if (tab.cells[i] || (!backfill && tab.lastTap === today())) return
+    if (tab.cells[i]) {
+      if (!ready) update(tab.id, { cells: tab.cells.map((c, j) => (j === i ? false : c)) })
+      return
+    }
+    if (ready && tab.lastTap === today()) return
     const r = el.getBoundingClientRect()
     setBurst({ x: r.left + r.width / 2, y: r.top + r.height / 2 })
-    update(tab.id, { cells: tab.cells.map((c, j) => (j === i ? true : c)), lastTap: today() })
+    update(tab.id, { cells: tab.cells.map((c, j) => (j === i ? true : c)), ...(ready ? { lastTap: today() } : {}) })
   }
 
   return (
@@ -186,6 +190,7 @@ export default function Goals() {
           className="goals-title"
           style={{ color: tab.color }}
           value={tab.title}
+          readOnly={ready}
           onChange={e => update(tab.id, { title: e.target.value })}
         />
         <div className="goals-grid">
@@ -201,6 +206,15 @@ export default function Goals() {
             </button>
           ))}
         </div>
+        {!ready && (
+          <button
+            className="goals-ready"
+            style={{ color: tab.color, borderColor: tab.color }}
+            onClick={() => window.confirm('Lock the title and limit taps to one per day? This can\'t be undone.') && update(tab.id, { ready: true })}
+          >
+            Ready
+          </button>
+        )}
       </div>
     </div>
   )
