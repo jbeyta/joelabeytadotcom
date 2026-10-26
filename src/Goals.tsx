@@ -135,7 +135,7 @@ export default function Goals() {
     document.title = 'Goals'
   }, [state])
 
-  const { synced, syncing } = useSync('goals', STORAGE_KEY, tabs, remote => {
+  const { synced, syncing } = useSync('goals', tabs, remote => {
     if (remote?.length) setState(s => ({ ...s, tabs: remote }))
   })
 

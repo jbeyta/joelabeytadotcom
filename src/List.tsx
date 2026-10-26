@@ -33,7 +33,7 @@ export default function List() {
     } catch { /* ignore */ }
   }, [items, locked])
 
-  const { synced, syncing } = useSync('list', KEY, items, remote => {
+  const { synced, syncing } = useSync('list', items, remote => {
     if (remote?.length) setItems(remote)
   })
 

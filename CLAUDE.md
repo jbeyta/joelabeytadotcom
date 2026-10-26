@@ -7,11 +7,10 @@
 ```
 SYNC_BUCKET=gromulax-joelabeyta-sync
 SYNC_AWS_REGION=us-east-1
-SYNC_KEY_PREFIX=local/
 AWS_PROFILE=gromulax
 ```
 
-`SYNC_KEY_PREFIX=local/` keeps local saves apart from real user data. Sign-in uses the real Cognito user pool.
+Sign-in uses the real Cognito user pool, and sync reads and writes the real user data. To keep local saves apart, add `SYNC_KEY_PREFIX=local/`.
 
 ## AWS
 

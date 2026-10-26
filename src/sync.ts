@@ -20,13 +20,8 @@ async function call<T>(key: string, doc?: Doc<T>): Promise<Doc<T> | null> {
 // Keeps `data` in step with the server copy. Each side has a stamp: the time of its last
 // local change. The newer stamp wins. A device with no stamp never uploads, so a wiped
 // device restores from the server and does not overwrite it.
-export function useSync<T>(key: string, storageKey: string, data: T, apply: (data: T) => void) {
-  const [stampKey] = useState(() => {
-    const k = `sync:${key}`
-    // Data saved before sync existed: stamp 1 uploads it only when the server has nothing.
-    if (!localStorage.getItem(k) && localStorage.getItem(storageKey)) localStorage.setItem(k, '1')
-    return k
-  })
+export function useSync<T>(key: string, data: T, apply: (data: T) => void) {
+  const stampKey = `sync:${key}`
   const [syncedAt, setSyncedAt] = useState(() => Number(localStorage.getItem(`sync:${key}:at`)) || 0)
   const [syncing, setSyncing] = useState(false)
   const latest = useRef(data)
