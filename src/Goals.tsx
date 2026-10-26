@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './Goals.scss'
+import { useSync } from './sync.ts'
 
 type Tab = { id: string; title: string; color: string; cells: boolean[]; lastTap: string | null; ready?: boolean }
 
@@ -132,6 +133,10 @@ export default function Goals() {
     } catch { /* ignore */ }
     document.title = 'Goals'
   }, [state])
+
+  useSync('goals', STORAGE_KEY, tabs, remote => {
+    if (remote?.length) setState(s => ({ ...s, tabs: remote }))
+  })
 
   const update = (id: string, patch: Partial<Tab>) =>
     setState(s => ({ ...s, tabs: s.tabs.map(t => (t.id === id ? { ...t, ...patch } : t)) }))

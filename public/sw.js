@@ -43,6 +43,7 @@ self.addEventListener('fetch', event => {
   }
 
   if (url.origin !== location.origin && !/fonts\.(googleapis|gstatic)\.com$/.test(url.hostname)) return
+  if (url.pathname.startsWith('/api/')) return
 
   event.respondWith((async () => {
     const hit = await caches.match(req)

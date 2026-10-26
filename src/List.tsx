@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './List.scss'
+import { useSync } from './sync.ts'
 
 type Item = { id: string; text: string; checked: boolean }
 
@@ -30,6 +31,10 @@ export default function List() {
       localStorage.setItem(KEY, JSON.stringify({ items, locked }))
     } catch { /* ignore */ }
   }, [items, locked])
+
+  useSync('list', KEY, items, remote => {
+    if (remote?.length) setItems(remote)
+  })
 
   useEffect(() => {
     if (focusId.current) {
