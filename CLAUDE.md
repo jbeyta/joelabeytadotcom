@@ -1,5 +1,18 @@
 # joelabeyta.com
 
+## Local testing
+
+`npm run dev` serves `/apps` and runs `api/*.ts` through a plugin in `vite.config.ts`. The plugin reads `.env.local`, which is not committed:
+
+```
+SYNC_BUCKET=gromulax-joelabeyta-sync
+SYNC_AWS_REGION=us-east-1
+SYNC_KEY_PREFIX=local/
+AWS_PROFILE=gromulax
+```
+
+`SYNC_KEY_PREFIX=local/` keeps local saves apart from real user data. Sign-in uses the real Cognito user pool.
+
 ## AWS
 
 * Make every AWS change in Terraform, in `infra/`. Do not change AWS resources with the AWS CLI or the console.

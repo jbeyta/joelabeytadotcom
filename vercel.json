@@ -3,7 +3,10 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "rewrites": [
-    { "source": "/list", "destination": "/index.html" },
-    { "source": "/goals", "destination": "/goals.html" }
+    { "source": "/apps", "destination": "/apps.html" }
+  ],
+  "redirects": [
+    { "source": "/goals", "destination": "/apps#goals", "permanent": false },
+    { "source": "/list", "destination": "/apps#list", "permanent": false }
   ]
 }

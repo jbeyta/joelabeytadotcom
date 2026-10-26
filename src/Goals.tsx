@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './Goals.scss'
 import { useSync } from './sync.ts'
+import Menu from './Menu.tsx'
 
 type Tab = { id: string; title: string; color: string; cells: boolean[]; lastTap: string | null; ready?: boolean }
 
@@ -134,7 +135,7 @@ export default function Goals() {
     document.title = 'Goals'
   }, [state])
 
-  const synced = useSync('goals', STORAGE_KEY, tabs, remote => {
+  const { synced, syncing } = useSync('goals', STORAGE_KEY, tabs, remote => {
     if (remote?.length) setState(s => ({ ...s, tabs: remote }))
   })
 
@@ -172,6 +173,7 @@ export default function Goals() {
       <Fireworks color={isHome ? '#fff' : tab.color} burst={burst} constant={full} />
       <div className="goals-content">
         <div className="goals-tabs">
+          <Menu className="goals-tab" />
           <button
             className={`goals-tab${isHome ? ' active' : ''}`}
             style={{ borderColor: isHome ? '#fff' : undefined }}
@@ -258,7 +260,12 @@ export default function Goals() {
           </>
         )}
       </div>
-      <div className="goals-synced">last synced - {synced}</div>
+      <div className="goals-synced">
+        <span className="sync-status">
+          {syncing && <span className="sync-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>}
+          last synced - {synced}
+        </span>
+      </div>
     </div>
   )
 }

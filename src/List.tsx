@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './List.scss'
 import { useSync } from './sync.ts'
+import Menu from './Menu.tsx'
 
 type Item = { id: string; text: string; checked: boolean }
 
@@ -32,7 +33,7 @@ export default function List() {
     } catch { /* ignore */ }
   }, [items, locked])
 
-  const synced = useSync('list', KEY, items, remote => {
+  const { synced, syncing } = useSync('list', KEY, items, remote => {
     if (remote?.length) setItems(remote)
   })
 
@@ -89,6 +90,7 @@ export default function List() {
   return (
     <div className="list-page">
       <div className="list-bar">
+        <Menu />
         <button
           aria-label="Lock"
           aria-pressed={locked}
@@ -136,7 +138,12 @@ export default function List() {
           </li>
         ))}
       </ul>
-      <div className="list-synced">last synced - {synced}</div>
+      <div className="list-synced">
+        <span className="sync-status">
+          {syncing && <span className="sync-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>}
+          last synced - {synced}
+        </span>
+      </div>
     </div>
   )
 }

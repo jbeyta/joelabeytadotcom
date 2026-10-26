@@ -1,8 +1,8 @@
 {
-  "name": "Goals",
-  "short_name": "Goals",
-  "start_url": "/goals",
-  "scope": "/goals",
+  "name": "Apps",
+  "short_name": "Apps",
+  "start_url": "/apps",
+  "scope": "/apps",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",

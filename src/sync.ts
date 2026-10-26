@@ -1,35 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
+import { getAccessToken } from './auth.ts'
+import './sync.scss'
 
 type Doc<T> = { updatedAt: number; data: T }
 
-const TOKEN_KEY = 'sync-token'
-let token: string | null | undefined
-
-// Ask once per page load. Keep the token in a password manager: a wiped device needs it to restore.
-const getToken = () => {
-  if (token === undefined) {
-    token = localStorage.getItem(TOKEN_KEY)
-    if (!token) {
-      token = window.prompt('Sync token (cancel to keep data on this device only)')?.trim() || null
-      if (token) localStorage.setItem(TOKEN_KEY, token)
-    }
-  }
-  return token
-}
-
 async function call<T>(key: string, doc?: Doc<T>): Promise<Doc<T> | null> {
-  const t = getToken()
-  if (!t) throw new Error('no sync token')
+  const token = await getAccessToken()
+  if (!token) throw new Error('signed out')
   const res = await fetch(`/api/sync?key=${key}`, {
     method: doc ? 'PUT' : 'GET',
-    headers: { authorization: `Bearer ${t}`, ...(doc && { 'content-type': 'application/json' }) },
+    headers: { authorization: `Bearer ${token}`, ...(doc && { 'content-type': 'application/json' }) },
     body: doc && JSON.stringify(doc),
     cache: 'no-store',
   })
-  if (res.status === 401) {
-    localStorage.removeItem(TOKEN_KEY)
-    token = null
-  }
   if (!res.ok) throw new Error(`sync ${res.status}`)
   return doc ? null : res.json()
 }
@@ -45,6 +28,7 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
     return k
   })
   const [syncedAt, setSyncedAt] = useState(() => Number(localStorage.getItem(`sync:${key}:at`)) || 0)
+  const [syncing, setSyncing] = useState(false)
   const latest = useRef(data)
   const applyRef = useRef(apply)
   const applied = useRef(data)
@@ -57,21 +41,25 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
   })
 
   useEffect(() => {
-    if (!import.meta.env.PROD) return
-    const stamp = () => Number(localStorage.getItem(stampKey)) || 0
+    const stamp =() => Number(localStorage.getItem(stampKey)) || 0
     const run = async () => {
-      const remote = await call<T>(key)
-      const local = stamp()
-      if (remote && remote.updatedAt > local) {
-        localStorage.setItem(stampKey, String(remote.updatedAt))
-        applied.current = remote.data
-        applyRef.current(remote.data)
-      } else if (local > (remote?.updatedAt ?? 0)) {
-        await call(key, { updatedAt: local, data: latest.current })
+      setSyncing(true)
+      try {
+        const remote = await call<T>(key)
+        const local = stamp()
+        if (remote && remote.updatedAt > local) {
+          localStorage.setItem(stampKey, String(remote.updatedAt))
+          applied.current = remote.data
+          applyRef.current(remote.data)
+        } else if (local > (remote?.updatedAt ?? 0)) {
+          await call(key, { updatedAt: local, data: latest.current })
+        }
+        const now = Date.now()
+        localStorage.setItem(`${stampKey}:at`, String(now))
+        setSyncedAt(now)
+      } finally {
+        setSyncing(false)
       }
-      const now = Date.now()
-      localStorage.setItem(`${stampKey}:at`, String(now))
-      setSyncedAt(now)
     }
     let queue = Promise.resolve()
     const trigger = () => { queue = queue.then(run).catch(() => {}) }
@@ -93,7 +81,8 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
     timer.current = window.setTimeout(() => sync.current(), 1000)
   }, [data, stampKey])
 
-  return syncedAt
+  const synced = syncedAt
     ? new Date(syncedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
     : 'never'
+  return { synced, syncing }
 }

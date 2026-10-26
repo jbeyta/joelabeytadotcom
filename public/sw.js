@@ -1,6 +1,6 @@
-const CACHE = 'list-v3'
-const PAGES = ['/index.html', '/goals.html']
-const pageFor = url => (url.pathname.startsWith('/goals') ? '/goals.html' : '/index.html')
+const CACHE = 'apps-v1'
+const PAGES = ['/apps.html']
+const pageFor = () => '/apps.html'
 
 self.addEventListener('install', event => {
   event.waitUntil((async () => {
@@ -12,7 +12,7 @@ self.addEventListener('install', event => {
       assets.push(...[...html.matchAll(/(?:src|href)="(\/[^"]+)"/g)].map(m => m[1]))
       await cache.put(page, res)
     }
-    await cache.addAll([...new Set([...assets, '/manifest.webmanifest', '/goals.webmanifest', '/goals-icon.svg', '/goals-icon-192.png', '/goals-icon-512.png', '/goals-apple-touch-icon.png'])])
+    await cache.addAll([...new Set([...assets, '/apps.webmanifest', '/goals-icon.svg', '/goals-icon-192.png', '/goals-icon-512.png', '/goals-apple-touch-icon.png'])])
     self.skipWaiting()
   })())
 })

@@ -1,0 +1,25 @@
+// Three dots before "last synced" while a sync runs. They hang off the left end,
+// so the centered text does not move when they appear.
+.sync-status {
+  position: relative;
+}
+
+.sync-dots {
+  position: absolute;
+  right: 100%;
+  padding-right: 0.5em;
+  white-space: nowrap;
+
+  span {
+    opacity: 0;
+    animation: sync-dot 1.2s infinite;
+
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+}
+
+@keyframes sync-dot {
+  0%, 60% { opacity: 1; }
+  60.01%, 100% { opacity: 0; }
+}
