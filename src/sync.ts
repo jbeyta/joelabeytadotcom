@@ -36,12 +36,13 @@ export function useSync<T>(key: string, data: T, apply: (data: T) => void) {
   })
 
   useEffect(() => {
-    const stamp =() => Number(localStorage.getItem(stampKey)) || 0
+    const stamp = () => Number(localStorage.getItem(stampKey)) || 0
     const run = async () => {
       setSyncing(true)
       try {
-        const remote = await call<T>(key)
+        // Read the stamp before the download, so an edit made while it runs cannot beat a newer server copy.
         const local = stamp()
+        const remote = await call<T>(key)
         if (remote && remote.updatedAt > local) {
           localStorage.setItem(stampKey, String(remote.updatedAt))
           applied.current = remote.data

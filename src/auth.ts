@@ -98,8 +98,12 @@ export async function getAccessToken() {
     localStorage.setItem(SESSION_KEY, JSON.stringify(next))
     return next.access
   } catch (e) {
-    // The refresh token expired or was revoked: the user must sign in again.
-    if (e instanceof AuthError && e.code === 'NotAuthorizedException') save(null)
+    // The refresh token expired or was revoked: the user must sign in again. Clear local
+    // data as signOut does, so a different user who signs in next does not upload it.
+    if (e instanceof AuthError && e.code === 'NotAuthorizedException') {
+      localStorage.clear()
+      save(null)
+    }
     throw e
   }
 }
