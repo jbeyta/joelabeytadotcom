@@ -44,6 +44,7 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
     if (!localStorage.getItem(k) && localStorage.getItem(storageKey)) localStorage.setItem(k, '1')
     return k
   })
+  const [syncedAt, setSyncedAt] = useState(() => Number(localStorage.getItem(`sync:${key}:at`)) || 0)
   const latest = useRef(data)
   const applyRef = useRef(apply)
   const applied = useRef(data)
@@ -68,6 +69,9 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
       } else if (local > (remote?.updatedAt ?? 0)) {
         await call(key, { updatedAt: local, data: latest.current })
       }
+      const now = Date.now()
+      localStorage.setItem(`${stampKey}:at`, String(now))
+      setSyncedAt(now)
     }
     let queue = Promise.resolve()
     const trigger = () => { queue = queue.then(run).catch(() => {}) }
@@ -88,4 +92,8 @@ export function useSync<T>(key: string, storageKey: string, data: T, apply: (dat
     clearTimeout(timer.current)
     timer.current = window.setTimeout(() => sync.current(), 1000)
   }, [data, stampKey])
+
+  return syncedAt
+    ? new Date(syncedAt).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })
+    : 'never'
 }

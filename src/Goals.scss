@@ -20,7 +20,19 @@
     z-index: 1;
     max-width: 480px;
     margin: 0 auto;
-    padding: 24px 16px;
+    padding: 24px 16px calc(48px + env(safe-area-inset-bottom));
+  }
+
+  .goals-synced {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    z-index: 1;
+    text-align: center;
+    font: 12px monospace;
+    color: #333;
+    pointer-events: none;
   }
 
   .goals-tabs {

@@ -32,7 +32,7 @@ export default function List() {
     } catch { /* ignore */ }
   }, [items, locked])
 
-  useSync('list', KEY, items, remote => {
+  const synced = useSync('list', KEY, items, remote => {
     if (remote?.length) setItems(remote)
   })
 
@@ -136,6 +136,7 @@ export default function List() {
           </li>
         ))}
       </ul>
+      <div className="list-synced">last synced - {synced}</div>
     </div>
   )
 }

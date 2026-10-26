@@ -134,7 +134,7 @@ export default function Goals() {
     document.title = 'Goals'
   }, [state])
 
-  useSync('goals', STORAGE_KEY, tabs, remote => {
+  const synced = useSync('goals', STORAGE_KEY, tabs, remote => {
     if (remote?.length) setState(s => ({ ...s, tabs: remote }))
   })
 
@@ -258,6 +258,7 @@ export default function Goals() {
           </>
         )}
       </div>
+      <div className="goals-synced">last synced - {synced}</div>
     </div>
   )
 }
